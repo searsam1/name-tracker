@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
 
 function App() {
+
+  const [name, setName] = useState('')
+  const [names, setNames] = useState([])
+
+  const handleClick = () => {
+    setNames((prev) => [...prev, name])
+    // reset name for input field
+    // must have <input value={name} to work
+    setName('')
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <h2>Name Tracker</h2>
+      <input
+        onChange={({ target }) => setName(target.value)}
+        placeholder='Name'
+        value={name}
+      />
+      <button
+        onClick={handleClick}>
+        Set Names
+      </button>
+      <div className='nameBox'>
+        <h3>Names</h3>
+        <div>
+          {names.map((name, idx) => <p key={idx}>{name}</p>)}
+        </div>
+      </div>
     </div>
   );
 }
