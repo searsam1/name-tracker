@@ -1,16 +1,29 @@
 import { useState } from 'react';
 import './App.css';
+import { v4 as uuidv4 } from 'uuid';
 
 function App() {
-
   const [name, setName] = useState('')
   const [names, setNames] = useState([])
 
+  const generateId = () => {
+    return uuidv4();
+  }
+  
+  const handleEnterPress = (event) => {
+    if(event.key === 'Enter') {
+      setNames((prev) => [...prev, { id: generateId(), name: name }])
+      setName('')
+    }
+  }
+
   const handleClick = () => {
-    setNames((prev) => [...prev, name])
-    // reset name for input field
-    // must have <input value={name} to work
+    setNames((prev) => [...prev, { id: generateId(), name: name }])
     setName('')
+  }
+
+  const removeName = (id) => {
+    setNames((prev) => prev.filter((name) => name.id !== id))
   }
 
   return (
@@ -18,17 +31,27 @@ function App() {
       <h2>Name Tracker</h2>
       <input
         onChange={({ target }) => setName(target.value)}
+        onKeyDown={handleEnterPress}
         placeholder='Name'
         value={name}
       />
-      <button
-        onClick={handleClick}>
+      <button onClick={handleClick}>
         Set Names
       </button>
       <div className='nameBox'>
         <h3>Names</h3>
         <div>
-          {names.map((name, idx) => <p key={idx}>{name}</p>)}
+          {names.map(
+            ({ id, name }) =>
+              <div key={id}>
+                <button 
+                  onClick={() => removeName(id)}
+                  aria-label={`Remove name ${name}`}
+                >
+                  {name}
+                </button>
+              </div>
+          )}
         </div>
       </div>
     </div>
